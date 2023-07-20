@@ -2,15 +2,9 @@
 name: CI
 
 on:
-  push:
-    branches-ignore:
-      - main
-    paths:
-      - 'src/**'
-      - 'Dockerfile'
-      - 'tests/unit/**'
-  workflow_dispatch:
-    inputs: {}
+  pull_request: 
+    types: [opened, edited]
+  workflow_dispatch: {}
 
 
 jobs:
