@@ -14,6 +14,7 @@ on:
 
 jobs:
   pr:
+    name: Check if Closed PR is merged
     runs-on: ubuntu-22.04
     outputs:
       is-merged: ${{ steps.pr.outputs.is-merged }}
@@ -47,47 +48,8 @@ jobs:
           echo "PR is merged: ${{ steps.pr.outputs.is-merged }}"
             
 
-  test:
+  cd-on-merge:
     if: ${{ needs.pr.outputs.is-merged == 'true' }}
     needs:
       - pr
-    uses: ./.github/workflows/_test.yml
-    with:
-      python-version: "3.11"
-
-
-  version:
-    if: ${{ needs.pr.outputs.is-merged == 'true' }}
-    needs:
-      - pr
-    uses: ./.github/workflows/_version.yml
-
-
-  build:
-    if: ${{ needs.pr.outputs.is-merged == 'true' }}
-    needs:
-      - pr
-      - version
-      - test
-    permissions:
-      packages: write
-      contents: read
-    uses: ./.github/workflows/_build.yml
-    with: 
-      is-release: ${{ needs.version.outputs.is-release == 'true' }}
-      python-version: "3.11"
-      version: ${{ needs.version.outputs.version }}
-        
-
-  release:
-    if: ${{ needs.pr.outputs.is-merged == 'true' }}
-    needs:
-      - pr
-      - version
-      - build
-    permissions:
-      contents: write
-    uses: ./.github/workflows/_release.yml
-    with:
-      is-release: ${{ needs.version.outputs.is-release == 'true' }}
-      version: ${{ needs.version.outputs.version }}
+    uses: ./.github/workflows/_cd-on-merge.yml
