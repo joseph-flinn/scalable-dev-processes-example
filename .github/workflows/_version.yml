@@ -1,0 +1,61 @@
+---
+name: _version
+run-name: Calculate Version
+
+on:
+  workflow_call:
+    outputs:
+      is-release:
+        description: "detects if the version represents a Release"
+        value: ${{ jobs.version.outputs.is-release }}
+      version:
+        description: "version to be built"
+        value: ${{ jobs.version.outputs.version }}
+
+jobs:
+  version:
+    name: Calculate Version
+    runs-on: ubuntu-22.04
+    outputs:
+      is-release: ${{ steps.version.outputs.is-release }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab  # v3.5.2
+        with:
+          fetch-depth: 0
+
+      - name: Detect baseVersion change
+        id: baseVersion
+        run: |
+          DIFF_LEN=$(git diff --name-only HEAD~1 -- version.json | wc -l | xargs)
+
+          echo "DIFF_LEN: $DIFF_LEN"
+
+          if [[ "$DIFF_LEN" != "0" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate Version
+        id: version
+        run: |
+          git fetch --prune --tags
+
+          echo "Calculating next version..."
+          base_version=$(cat version.json | jq -r ".baseVersion")
+          latest_tag_version=$(git tag --sort=committerdate --list | tail -1)
+          echo "  latest_tag_version: $latest_tag_version"
+
+          if [[ "${{ steps.baseVersion.outputs.changed}}" == "true" ]]; then
+            patch_version="0"
+            echo "is-release=true" >> $GITHUB_OUTPUT
+          else
+            patch_version=$((${latest_tag_version##*.} + 1))
+            echo "is-release=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "  version: $base_version.$patch_version"
+          echo "version=$base_version.$patch_version" >> $GITHUB_OUTPUT
+          echo "Done"

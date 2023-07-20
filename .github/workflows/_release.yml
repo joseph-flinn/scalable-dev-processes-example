@@ -1,0 +1,47 @@
+---
+name: Release
+
+
+on:
+  workflow_call:
+    inputs:
+      is-release:
+        type: boolean
+        required: true
+      version:
+        type: string
+        required: true
+
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9  # v3.5.3
+        with:
+          fetch-depth: 0
+
+      - name: Create Tag
+        if: ${{ ! inputs.is-release }}
+        run: |
+          git config --local user.email "<>"
+          git config --local user.name "DevOps Bot"
+
+          git tag v${{ inputs.version }}
+          git push origin v${{ inputs.version }}
+
+      - name: Create release
+        if: ${{ inputs.is-release }}
+        uses: ncipollo/release-action@a2e71bdd4e7dab70ca26a852f29600c98b33153e  # v1.12.0
+        with:
+          commit: ${{ github.sha }}
+          tag: "v${{ inputs.version }}"
+          name: "Version ${{ inputs.version }}"
+          body: "Releasing ${{ inputs.version }}"
+          generateReleaseNotes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: true

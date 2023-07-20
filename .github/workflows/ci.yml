@@ -1,0 +1,20 @@
+---
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - 'src/**'
+      - 'Dockerfile'
+      - 'tests/unit/**'
+  workflow_dispatch:
+    inputs: {}
+
+
+jobs:
+  test:
+    uses: ./.github/workflows/_test.yml
+    with:
+      python-version: "3.11"
