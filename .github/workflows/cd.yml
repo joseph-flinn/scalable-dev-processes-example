@@ -1,6 +1,6 @@
 ---
 name: CD
-run-name: CD - PR ${{ github.event.pull_request.number }}
+run-name: CD \#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}
 
 
 on:
