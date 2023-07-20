@@ -1,5 +1,6 @@
 ---
-name: Release
+name: _release
+run-name: Release ${{ inputs.version }}
 
 
 on:

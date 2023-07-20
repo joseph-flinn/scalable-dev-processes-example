@@ -1,5 +1,6 @@
 ---
-name: Build
+name: _build
+run-name: Build ${{ inputs.version }}
 
 
 on:
