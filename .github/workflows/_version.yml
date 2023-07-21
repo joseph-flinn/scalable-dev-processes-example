@@ -4,10 +4,14 @@ run-name: Calculate Version
 
 on:
   workflow_call:
-    outputs:
+    inputs:
       is-release:
-        description: "detects if the version represents a Release"
-        value: ${{ jobs.version.outputs.is-release }}
+        type: boolean
+        required: true
+      pull-request-number:
+        type: string
+        required: false
+    outputs:
       version:
         description: "version to be built"
         value: ${{ jobs.version.outputs.version }}
@@ -17,45 +21,63 @@ jobs:
     name: Calculate Version
     runs-on: ubuntu-22.04
     outputs:
-      is-release: ${{ steps.version.outputs.is-release }}
-      version: ${{ steps.version.outputs.version }}
+      version: ${{ steps.calcute.outputs.version }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab  # v3.5.2
         with:
           fetch-depth: 0
 
-      - name: Detect baseVersion change
-        id: baseVersion
+      - name: Get version bump type
+        if: ${{ inputs.is-release }}
+        id: bump-type
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          DIFF_LEN=$(git diff --name-only HEAD~1 -- version.json | wc -l | xargs)
+          #PR_ID=$(echo "${{ github.event.commits[0].message }}" | head -1 | grep -o "(#.*)" | grep -o "[0-9]*")
+          PR_ID=16
+          version_tag=$(gh pr view $PR_ID --json labels | jq -r ".labels[].name" | grep "version")
 
-          echo "DIFF_LEN: $DIFF_LEN"
-
-          if [[ "$DIFF_LEN" != "0" ]]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
+          # Single Version label Enforcement (should go in CI...) 
+          if [[ $(echo $version_tag | wc -w) -gt 1 ]]; then
+              echo "[!] multiple version labels found!"
+              exit 1
           fi
 
-      - name: Generate Version
-        id: version
-        run: |
-          git fetch --prune --tags
+          version_type=$(echo $version_tag | cut -d ":" -f 2)
+          echo "Version Bump Type: $version_type"
+          echo "type=$version_type" >> $GITHUB_OUTPUT
 
-          echo "Calculating next version..."
-          base_version=$(cat version.json | jq -r ".baseVersion")
+      - name: Calculate next version
+        id: calculate
+        run: |
+          echo -e "\nCalculating next version..."
+
           latest_tag_version=$(git tag --sort=committerdate --list | tail -1)
-          echo "  latest_tag_version: $latest_tag_version"
+          latest_version=${latest_tag_version:1}  # remove 'v' from tag version
 
-          if [[ "${{ steps.baseVersion.outputs.changed}}" == "true" ]]; then
-            patch_version="0"
-            echo "is-release=true" >> $GITHUB_OUTPUT
+          if [[ "${{ inputs.is-release }}" == "true" ]]; then
+            latest_major_version=$(echo $latest_version | cut -d "." -f 1)
+            latest_minor_version=$(echo $latest_version | cut -d "." -f 2)
+            latest_patch_version=$(echo $latest_version | cut -d "." -f 3)
+
+            echo "  latest_version:  $latest_version"
+            echo "  latest_major_version: $latest_major_version"
+            echo "  latest_minor_version: $latest_minor_version"
+            echo "  latest_patch_version: $latest_patch_version"
+
+            if [[ "$version_type" == "major" ]]; then
+              next_version="$(($latest_major_version + 1)).${latest_minor_version}.${latest_patch_version}"
+            elif [[ "$version_type" == "minor" ]]; then
+              next_version="${latest_major_version}.$(($latest_minor_version + 1)).${latest_patch_version}"
+            elif [[ "$version_type" == "patch" ]]; then
+              next_version="${latest_major_version}.${latest_minor_version}.$(($latest_patch_version + 1))"
+            else
+              next_version="${latest_major_version}.${latest_minor_version}.${latest_patch_version}"
+            fi
+
+            echo "Next Version: $next_version"
+            echo "version=$next_version" >> $GITHUB_OUTPUT
           else
-            patch_version=$((${latest_tag_version##*.} + 1))
-            echo "is-release=false" >> $GITHUB_OUTPUT
+            echo "version=$latest_version+${{ inputs.pull-request-number }}" >> $GITHUB_OUTPUT
           fi
-
-          echo "  version: $base_version.$patch_version"
-          echo "version=$base_version.$patch_version" >> $GITHUB_OUTPUT
-          echo "Done"
