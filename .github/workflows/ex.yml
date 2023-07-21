@@ -26,4 +26,4 @@ jobs:
         run: |
           #PR_ID=$(echo "${{ github.event.commits[0].message }}" | head -1 | grep -o "(#.*)" | grep -o "[0-9]*")
           PR_ID=16
-          gh pr view $PR_ID --json labels | jq -r ".labels[].name"
+          gh pr view $PR_ID --json labels | jq -r ".labels[].name" | grep "version"
