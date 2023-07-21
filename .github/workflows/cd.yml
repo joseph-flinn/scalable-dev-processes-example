@@ -52,4 +52,6 @@ jobs:
     if: ${{ needs.pr.outputs.is-merged == 'true' }}
     needs:
       - pr
+    permissions:
+      contents: write
     uses: ./.github/workflows/_cd-on-merge.yml
