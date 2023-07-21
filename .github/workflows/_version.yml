@@ -55,6 +55,8 @@ jobs:
 
       - name: Calculate next version
         id: calculate
+        env:
+          VERSION_TYPE: ${{ steps.bump-type.outputs.type }}
         run: |
           echo -e "\nCalculating next version..."
 
@@ -71,11 +73,11 @@ jobs:
             echo "  latest_minor_version: $latest_minor_version"
             echo "  latest_patch_version: $latest_patch_version"
 
-            if [[ "$version_type" == "major" ]]; then
+            if [[ "$VERSION_TYPE" == "major" ]]; then
               next_version="$(($latest_major_version + 1)).${latest_minor_version}.${latest_patch_version}"
-            elif [[ "$version_type" == "minor" ]]; then
+            elif [[ "$VERSION_TYPE" == "minor" ]]; then
               next_version="${latest_major_version}.$(($latest_minor_version + 1)).${latest_patch_version}"
-            elif [[ "$version_type" == "patch" ]]; then
+            elif [[ "$VERSION_TYPE" == "patch" ]]; then
               next_version="${latest_major_version}.${latest_minor_version}.$(($latest_patch_version + 1))"
             else
               next_version="${latest_major_version}.${latest_minor_version}.${latest_patch_version}"
