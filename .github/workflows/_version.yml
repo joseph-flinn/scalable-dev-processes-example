@@ -10,7 +10,7 @@ on:
         required: true
       pull-request-number:
         type: string
-        required: false
+        required: true
     outputs:
       version:
         description: "version to be built"
@@ -34,9 +34,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          #PR_ID=$(echo "${{ github.event.commits[0].message }}" | head -1 | grep -o "(#.*)" | grep -o "[0-9]*")
-          PR_ID=16
-          version_tag=$(gh pr view $PR_ID --json labels | jq -r ".labels[].name" | grep "version")
+          version_tag=$(gh pr view ${{ inputs.pull-request-number }} --json labels | jq -r ".labels[].name" | grep "version")
 
           # Single Version label Enforcement (should go in CI...) 
           if [[ $(echo $version_tag | wc -w) -gt 1 ]]; then
