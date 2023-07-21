@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - main
+      - experiment
   workflow_dispatch:
     inputs: {}
 
@@ -23,5 +24,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_ID=$(echo "${{ github.event.commits[0].message }}" | head -1 | grep -o "(#.*)" | grep -o "[0-9]*")
+          #PR_ID=$(echo "${{ github.event.commits[0].message }}" | head -1 | grep -o "(#.*)" | grep -o "[0-9]*")
+          PR_ID=16
           gh pr view $PR_ID --json labels | jq -r ".labels"
