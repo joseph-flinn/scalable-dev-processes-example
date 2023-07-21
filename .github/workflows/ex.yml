@@ -1,6 +1,6 @@
 ---
 name: Experiment
-run-name: "Exp #${{ github.event.head }}"
+run-name: "Exp #${{ github.ref }}"
 
 
 on:
