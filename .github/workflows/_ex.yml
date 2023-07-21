@@ -1,0 +1,21 @@
+---
+name: Experiment
+run-name: "Exp #${{ github.event.push.ref }}
+
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs: {}
+
+
+jobs:
+  exp:
+    name: experiment
+    runs-on: ubuntu-22.04
+    steps:
+      - name: run experiment
+        run: |
+          echo "Event data: ${{ github.event.push.commits[0].message }}"
