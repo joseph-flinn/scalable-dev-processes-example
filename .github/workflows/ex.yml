@@ -28,4 +28,4 @@ jobs:
               https://api.github.com/repos/${{ github.repository }}/pulls/$PR_ID
           )
 
-          echo "$pull_request"
+          echo "$pull_request" | jq -r ".labels"
