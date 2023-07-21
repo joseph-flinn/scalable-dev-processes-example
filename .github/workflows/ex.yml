@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9  #v3.5.3
+        with:
+          fetch-depth: 0
 
       - name: Get version bump type
         id: bump-type
