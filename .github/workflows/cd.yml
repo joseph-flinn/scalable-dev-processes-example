@@ -54,4 +54,5 @@ jobs:
       - pr
     permissions:
       contents: write
+      packages: write
     uses: ./.github/workflows/_cd-on-merge.yml
