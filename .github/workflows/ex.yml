@@ -19,4 +19,4 @@ jobs:
       - name: run experiment
         run: |
           echo "Event data: '${{ toJSON(github.event.commits) }}'"
-          echo "Event data: '${{ github.event.commits[0].message) }}'"
+          echo "Event data: '${{ github.event.commits[0].message }}'"
