@@ -21,7 +21,7 @@ jobs:
     name: Calculate Version
     runs-on: ubuntu-22.04
     outputs:
-      version: ${{ steps.calcute.outputs.version }}
+      version: ${{ steps.calculate.outputs.version }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab  # v3.5.2
