@@ -19,7 +19,7 @@ jobs:
 
 
   pr:
-    name: Check if Closed PR is merged
+    name: Get PR ID
     runs-on: ubuntu-22.04
     outputs:
       is-merged: ${{ steps.pr.outputs.id }}
@@ -38,7 +38,7 @@ jobs:
             jq -r ".commit.message"
           )
           ID=$(echo "$commit_message" | head -1 | grep -o "(#.*)" | grep -o "[0-9]*")
-          echo "id=$ID" >> $GITHUB
+          echo "id=$ID" >> $GITHUB_OUTPUT
             
 
   version:
