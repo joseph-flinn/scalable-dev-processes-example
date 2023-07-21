@@ -22,7 +22,7 @@ jobs:
     name: Get PR ID
     runs-on: ubuntu-22.04
     outputs:
-      is-merged: ${{ steps.pr.outputs.id }}
+      id: ${{ steps.pr.outputs.id }}
     steps:
       - name: Get PR ID
         id: pr
