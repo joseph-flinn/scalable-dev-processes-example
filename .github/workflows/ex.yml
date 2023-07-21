@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - main
+      - experiment
   workflow_dispatch:
     inputs: {}
 
@@ -18,10 +19,54 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9  #v3.5.3
+        with:
+          fetch-depth: 0
 
-      - name: run experiment
+      - name: Get version bump type
+        id: bump-type
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_ID=$(echo "${{ github.event.commits[0].message }}" | head -1 | grep -o "(#.*)" | grep -o "[0-9]*")
-          gh pr view $PR_ID --json labels | jq -r ".labels"
+          #PR_ID=$(echo "${{ github.event.commits[0].message }}" | head -1 | grep -o "(#.*)" | grep -o "[0-9]*")
+          PR_ID=16
+          version_tag=$(gh pr view $PR_ID --json labels | jq -r ".labels[].name" | grep "version")
+
+          # Single Version label Enforcement (should go in CI...) 
+          if [[ $(echo $version_tag | wc -w) -gt 1 ]]; then
+              echo "[!] multiple version labels found!"
+              exit 1
+          fi
+
+          version_type=$(echo $version_tag | cut -d ":" -f 2)
+          echo "Version Bump Type: $version_type"
+          echo "type=$version_type" >> $GITHUB_OUTPUT
+
+      - name: Calculate next version
+        id: calculate
+        run: |
+          echo -e "\nCalculating next version..."
+
+          latest_tag_version=$(git tag --sort=committerdate --list | tail -1)
+          latest_version=${latest_tag_version:1}  # remove 'v' from tag version
+
+          latest_major_version=$(echo $latest_version | cut -d "." -f 1)
+          latest_minor_version=$(echo $latest_version | cut -d "." -f 2)
+          latest_patch_version=$(echo $latest_version | cut -d "." -f 3)
+
+          echo "  latest_version:  $latest_version"
+          echo "  latest_major_version: $latest_major_version"
+          echo "  latest_minor_version: $latest_minor_version"
+          echo "  latest_patch_version: $latest_patch_version"
+
+          if [[ "$version_type" == "major" ]]; then
+            next_version="$(($latest_major_version + 1)).${latest_minor_version}.${latest_patch_version}"
+          elif [[ "$version_type" == "minor" ]]; then
+            next_version="${latest_major_version}.$(($latest_minor_version + 1)).${latest_patch_version}"
+          elif [[ "$version_type" == "patch" ]]; then
+            next_version="${latest_major_version}.${latest_minor_version}.$(($latest_patch_version + 1))"
+          else
+            next_version="${latest_major_version}.${latest_minor_version}.${latest_patch_version}"
+          fi
+
+          echo "Next Version: $next_version"
+          echo "version=$next_version" >> $GITHUB_OUTPUT
