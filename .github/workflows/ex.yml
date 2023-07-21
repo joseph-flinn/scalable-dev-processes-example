@@ -1,6 +1,6 @@
 ---
 name: Experiment
-run-name: "Exp #${{ github.ref }}"
+run-name: "Exp - ${{ github.sha }}"
 
 
 on:
