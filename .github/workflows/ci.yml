@@ -9,7 +9,7 @@ on:
 
 
 jobs:
-  test:
+  test-unit:
     uses: ./.github/workflows/_test.yml
     with:
       python-version: "3.11"
