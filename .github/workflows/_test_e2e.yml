@@ -34,7 +34,7 @@ jobs:
 
       - name: Run latest image
         run: |
-          IMAGE="ghcr.io/${{ github.repository }}/example1:${{ inputs.version }}
+          IMAGE=ghcr.io/${{ github.repository }}/example1:${{ inputs.version }}
           docker pull $IMAGE
           docker run --rm -d --name=test-e2e -e APP_MESSAGE="hey" -p 8080:8080 $IMAGE
 
