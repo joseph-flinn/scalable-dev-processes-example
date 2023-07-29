@@ -53,7 +53,7 @@ jobs:
   build:
     needs:
       - version
-      - test
+      - test-unit
     permissions:
       packages: write
       contents: read
