@@ -1,6 +1,6 @@
 ---
-name: _test
-run-name: Test
+name: _test_unit
+run-name: Run Unit Tests
 
 
 on:
@@ -8,7 +8,7 @@ on:
     inputs:
       python-version:
         type: string
-        default: false
+        required: true
 
 
 jobs:
@@ -29,5 +29,5 @@ jobs:
           python -m pip install --upgrade pipenv
           pipenv install --dev
 
-      - name: Run Unit Tests
+      - name: Run Tests
         run: pipenv run pytest tests/unit

@@ -15,12 +15,12 @@ def add_message(response: dict, msg: str) -> dict:
 
 @app.get("/")
 def root():
-    return add_message({}, "Hi from Bitwarden DevOps!")
+    return add_message({}, "Hello!")
 
 
 @app.get("/custom")
 def custom():
-    return add_message({}, os.environ['BW_MESSAGE'])
+    return add_message({}, os.environ['APP_MESSAGE'])
 
 
 @app.get("/version")

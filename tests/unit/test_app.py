@@ -21,21 +21,21 @@ def test_add_message() -> None:
     }
 
 
-def test_root_call(api_client: TestClient) -> None:
+def test_root(api_client: TestClient) -> None:
     response = api_client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Hi from Bitwarden DevOps!"}
+    assert response.json() == {"message": "Hello!"}
 
 
-def test_custom_call(monkeypatch, api_client: TestClient) -> None:
-    monkeypatch.setenv("BW_MESSAGE", "hey")
+def test_custom(monkeypatch, api_client: TestClient) -> None:
+    monkeypatch.setenv("APP_MESSAGE", "hey")
 
     response = api_client.get("/custom")
     assert response.status_code == 200
     assert response.json() == {"message": "hey"}
 
 
-def test_custom_call(api_client: TestClient) -> None:
+def test_version(api_client: TestClient) -> None:
     response = api_client.get("/version")
     assert response.status_code == 200
     assert response.json()["version"] == "0.0.0"
