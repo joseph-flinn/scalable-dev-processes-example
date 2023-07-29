@@ -1,15 +1,12 @@
 ---
-name: _test
-run-name: Test
+name: _test_unit
+run-name: Run Unit Tests
 
 
 on:
   workflow_call:
     inputs:
       python-version:
-        type: string
-        required: true
-      type:
         type: string
         required: true
 
@@ -33,4 +30,4 @@ jobs:
           pipenv install --dev
 
       - name: Run Tests
-        run: pipenv run pytest tests/${{ inputs.type }}
+        run: pipenv run pytest tests/unit

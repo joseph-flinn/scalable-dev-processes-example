@@ -10,7 +10,6 @@ on:
 
 jobs:
   test-unit:
-    uses: ./.github/workflows/_test.yml
+    uses: ./.github/workflows/_test_unit.yml
     with:
       python-version: "3.11"
-      type: unit
