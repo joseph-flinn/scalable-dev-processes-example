@@ -1,6 +1,6 @@
 ---
-name: CD
-run-name: "CD"
+name: on merge
+run-name: "CI - main"
 
 
 on:
