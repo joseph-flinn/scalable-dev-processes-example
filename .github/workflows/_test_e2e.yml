@@ -32,9 +32,14 @@ jobs:
           python -m pip install --upgrade pipenv
           pipenv install --dev
 
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc  # v2.2.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run latest image
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           IMAGE=ghcr.io/${{ github.repository }}/example1:${{ inputs.version }}
           docker pull $IMAGE
