@@ -57,7 +57,7 @@ jobs:
           if [[ "${{ inputs.is-release }}" == "true" ]]; then
             echo "tags=ghcr.io/${{ github.repository }}/example1:latest,ghcr.io/${{ github.repository }}/example1:${{ inputs.version }}" >> $GITHUB_OUTPUT
           else
-            echo "tags=ghcr.io/${{ github.repository }}/exmaple1:${{ inputs.version }}" >> $GITHUB_OUTPUT
+            echo "tags=ghcr.io/${{ github.repository }}/example1:${{ inputs.version }}" >> $GITHUB_OUTPUT
           fi
 
       - name: Login to container registry
