@@ -1,5 +1,5 @@
 ---
-name: on merge
+name: CI - main
 run-name: "CI - main"
 
 

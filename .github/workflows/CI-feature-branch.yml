@@ -1,5 +1,5 @@
 ---
-name: on PR
+name: CI Feature Branch
 run-name: "CI - ${{ github.event.pull_request.title }}"
 
 on:
