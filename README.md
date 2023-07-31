@@ -2,9 +2,11 @@
 # Scalable Dev Processes Example
 
 ## Requirements
+- Python 3.11 (with pyenv)
 - pipenv
 - docker
 
+The Python dependencies are set up for Nix-OS in `shell.nix`
 
 ## Development
 
