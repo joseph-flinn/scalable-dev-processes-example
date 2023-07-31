@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       contents: write
+      packages: write
     steps:
       - name: Checkout repo
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9  # v3.5.3
@@ -46,3 +47,18 @@ jobs:
           generateReleaseNotes: true
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: true
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc  # v2.2.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run latest image
+        run: |
+          VERSION_IMAGE=ghcr.io/${{ github.repository }}/example1:${{ inputs.version }}
+          NEW_LATEST_IMAGE=ghcr.io/${{ github.repository }}/example1:latest
+
+          docker pull $VERSION_IMAGE
+          docker tag $VERSION_IMAGE $NEW_LATEST_IMAGE
