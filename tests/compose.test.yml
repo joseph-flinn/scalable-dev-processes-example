@@ -1,0 +1,9 @@
+services:
+  test:
+    image: tests
+    build: ./tests
+    command: sleep 5; pytest tests/e2e || false
+    depends_on:
+      - api
+    environment:
+      TEST_URL: "http://api:8080"

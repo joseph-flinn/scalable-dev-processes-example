@@ -46,7 +46,9 @@ jobs:
           docker run --rm -d --name=test-e2e -e APP_MESSAGE="hey" -p 8080:8080 $IMAGE
 
       - name: Run Tests
-        run: pipenv run pytest tests/e2e
+        run: |
+          sleep 5 # Wait for api to fully come up
+          pipenv run pytest tests/e2e
 
       - name: Cleanup
         if: always()

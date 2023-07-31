@@ -1,10 +1,11 @@
+import os
 import pytest
 import re
 import requests
 
 @pytest.fixture
 def test_url() -> str:
-    return "http://localhost:8080"
+    return os.environ.get("TEST_URL", "http://localhost:8080")
 
 
 def test_root(test_url) -> None:
