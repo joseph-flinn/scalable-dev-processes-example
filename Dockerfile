@@ -26,9 +26,9 @@ COPY --from=python-deps /.venv /.venv
 ENV PATH="/.venv/bin:$PATH"
 
 # Create and switch to a new user
-RUN useradd --create-home bitwarden
-WORKDIR /home/bitwarden
-USER bitwarden
+RUN useradd --create-home me
+WORKDIR /home/me
+USER me
 
 # Install application into container
 COPY src ./src
@@ -36,3 +36,4 @@ COPY version.json ./
 
 # Run the application
 CMD ["uvicorn", "src.app:app", "--host", "0.0.0.0", "--port", "8080"]
+#CMD ["uvicorn", "src.app:app", "--host", "127.0.0.1", "--port", "8080"]

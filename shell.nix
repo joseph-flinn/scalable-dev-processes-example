@@ -1,6 +1,6 @@
 with import <nixpkgs> {};
 let
-  pythonEnv = python310.withPackages(ps: [
+  pythonEnv = python311.withPackages(ps: [
     ps.fastapi
     ps.uvicorn
     ps.requests
@@ -10,6 +10,8 @@ let
   ]);
 in mkShell {
   packages = [
+    pipenv
+    python311
     pythonEnv
   ];
 }
