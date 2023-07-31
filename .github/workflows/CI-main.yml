@@ -79,6 +79,7 @@ jobs:
       - test-e2e
     permissions:
       contents: write
+      packages: write
     uses: ./.github/workflows/_release.yml
     with:
       is-release: ${{ needs.version.outputs.is-release == 'true' }}
