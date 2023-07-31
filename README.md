@@ -1,4 +1,4 @@
-![CI - main](https://github.com/joseph-flinn/scalable-dev-processes-example/actions/workflows/on-merge.yml/badge.svg?branch=main)
+![CI - main](https://github.com/joseph-flinn/scalable-dev-processes-example/actions/workflows/CI-main.yml/badge.svg?branch=main)
 # Scalable Dev Processes Example
 
 ## Requirements
