@@ -5,13 +5,13 @@ name = "pypi"
 
 [packages]
 fastapi = "*"
-requests = "*"
 uvicorn = {extras = ["standard"], version = "*"}
 
 [dev-packages]
 pytest = "*"
 black = "*"
 httpx = "*"
+requests = "*"
 
 [requires]
 python_version = "3.11"
