@@ -6,12 +6,13 @@ run-name: Build ${{ inputs.version }}
 on:
   workflow_call:
     inputs:
-      is-release:
-        type: boolean
-        required: true
       python-version:
         type: string
         required: true
+      update-latest:
+        type: boolean
+        required: true
+        default: false
       version:
         type: string
         required: true
@@ -26,8 +27,8 @@ jobs:
     name: Build
     runs-on: ubuntu-22.04
     permissions:
-      packages: write
       contents: read
+      packages: write
     steps:
       - name: Checkout repo
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9  # v3.5.3
@@ -54,7 +55,7 @@ jobs:
       - name: Generate tag list
         id: tag-list
         run: |
-          if [[ "${{ inputs.is-release }}" == "true" ]]; then
+          if [[ "${{ inputs.update-latest }}" == "true" ]]; then
             echo "tags=ghcr.io/${{ github.repository }}/example1:latest,ghcr.io/${{ github.repository }}/example1:${{ inputs.version }}" >> $GITHUB_OUTPUT
           else
             echo "tags=ghcr.io/${{ github.repository }}/example1:${{ inputs.version }}" >> $GITHUB_OUTPUT
