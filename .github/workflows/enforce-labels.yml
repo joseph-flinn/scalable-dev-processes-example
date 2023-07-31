@@ -1,5 +1,6 @@
 ---
 name: Enforce PR labels
+run-name: Enforce PR labels
 
 on:
   pull_request:
