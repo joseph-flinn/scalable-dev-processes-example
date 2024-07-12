@@ -87,7 +87,7 @@ jobs:
 
 
   staging-deploy:
-    name: Deploy
+    name: deploy to staging
     runs-on: ubuntu-latest
     needs: [release]
     steps:
@@ -96,8 +96,9 @@ jobs:
 
   # For traditional implementation of strict separation of duties for compliance
   prod-deploy:
-    name: Deploy
+    name: deploy to production
     runs-on: ubuntu-latest
     needs: [staging-deploy]
+    environment: production
     steps:
       - run: echo "Manual approval to deploy to production"
