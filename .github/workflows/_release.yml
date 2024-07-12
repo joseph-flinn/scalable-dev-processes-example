@@ -46,7 +46,7 @@ jobs:
           body: "Releasing ${{ inputs.version }}"
           generateReleaseNotes: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          draft: true
+          draft: false
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc  # v2.2.0
