@@ -10,6 +10,7 @@ on:
 
 jobs:
   test-unit:
+    name: Run Unit Tests
     uses: ./.github/workflows/_test_unit.yml
     with:
       python-version: "3.11"
