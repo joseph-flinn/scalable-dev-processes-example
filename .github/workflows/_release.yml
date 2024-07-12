@@ -6,9 +6,6 @@ run-name: Release ${{ inputs.version }}
 on:
   workflow_call:
     inputs:
-      is-release:
-        type: boolean
-        required: true
       version:
         type: string
         required: true
@@ -28,7 +25,6 @@ jobs:
           fetch-depth: 0
 
       - name: Create Tag
-        if: ${{ ! inputs.is-release }}
         run: |
           git config --local user.email "<>"
           git config --local user.name "DevOps Bot"
@@ -37,7 +33,6 @@ jobs:
           git push origin v${{ inputs.version }}
 
       - name: Create release
-        if: ${{ inputs.is-release }}
         uses: ncipollo/release-action@a2e71bdd4e7dab70ca26a852f29600c98b33153e  # v1.12.0
         with:
           commit: ${{ github.sha }}
