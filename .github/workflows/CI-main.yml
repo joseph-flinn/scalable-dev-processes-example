@@ -61,7 +61,7 @@ jobs:
       contents: read
     uses: ./.github/workflows/_build.yml
     with: 
-      is-release: ${{ needs.version.outputs.is-release }}
+      is-release: ${{ needs.version.outputs.is-release == 'true' }}
       python-version: "3.11"
       version: ${{ needs.version.outputs.version }}
 
