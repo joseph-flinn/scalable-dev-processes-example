@@ -5,16 +5,16 @@ run-name: Calculate Version
 on:
   workflow_call:
     inputs:
-      is-release:
-        type: boolean
-        required: true
       pull-request-number:
         type: string
         required: true
     outputs:
       version:
-        description: "version to be built"
+        description: "calculated version"
         value: ${{ jobs.version.outputs.version }}
+      is-release:
+        description: "if version changed"
+        value: ${{ jobs.version.outputs.is-release }}
 
 jobs:
   version:
@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-22.04
     outputs:
       version: ${{ steps.calculate.outputs.version }}
+      is-release: ${{ steps.calculate.outputs.is-release}}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab  # v3.5.2
@@ -29,7 +30,6 @@ jobs:
           fetch-depth: 0
 
       - name: Get version bump type
-        if: ${{ inputs.is-release }}
         id: bump-type
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -63,7 +63,7 @@ jobs:
           latest_tag_version=$(git tag --sort=committerdate --list | tail -1)
           latest_version=${latest_tag_version:1}  # remove 'v' from tag version
 
-          if [[ "${{ inputs.is-release }}" == "true" ]]; then
+          if [[ "${{ steps.bump-type.outputs.type }}" != "skip" ]]; then
             latest_major_version=$(echo $latest_version | cut -d "." -f 1)
             latest_minor_version=$(echo $latest_version | cut -d "." -f 2)
             latest_patch_version=$(echo $latest_version | cut -d "." -f 3)
@@ -85,6 +85,8 @@ jobs:
 
             echo "Next Version: $next_version"
             echo "version=$next_version" >> $GITHUB_OUTPUT
+            echo "is-release=true" >> $GITHUB_OUTPUT
           else
             echo "version=$latest_version+${{ inputs.pull-request-number }}" >> $GITHUB_OUTPUT
+            echo "is-release=false" >> $GITHUB_OUTPUT
           fi
