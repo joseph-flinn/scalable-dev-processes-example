@@ -6,7 +6,7 @@
 - pipenv
 - docker
 
-The Python dependencies are set up for Nix-OS in `shell.nix`
+The Python dependencies are set up for Nix-OS in `flake.nix`
 
 ## Development
 
