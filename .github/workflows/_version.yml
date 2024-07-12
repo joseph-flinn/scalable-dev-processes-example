@@ -87,6 +87,6 @@ jobs:
             echo "version=$next_version" >> $GITHUB_OUTPUT
             echo "is-release=true" >> $GITHUB_OUTPUT
           else
-            echo "version=$latest_version+${{ inputs.pull-request-number }}" >> $GITHUB_OUTPUT
+            echo "version=$latest_version-${{ inputs.pull-request-number }}" >> $GITHUB_OUTPUT
             echo "is-release=false" >> $GITHUB_OUTPUT
           fi
