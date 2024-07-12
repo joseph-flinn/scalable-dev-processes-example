@@ -48,7 +48,6 @@ jobs:
       - pr
     uses: ./.github/workflows/_version.yml
     with:
-      is-release: true
       pull-request-number: ${{ needs.pr.outputs.id }}
 
 
@@ -82,7 +81,7 @@ jobs:
     needs:
       - version
       - test-e2e
-    if: ${{ needs.version.outputs.is-release }} == 'true'
+    if: ${{ needs.version.outputs.is-release == 'true' }}
     permissions:
       contents: write
       packages: write
